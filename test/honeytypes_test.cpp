@@ -12,7 +12,7 @@ TEST(Int, to_int)
 	EXPECT_EQ(30, intv.to_int());
 }
 
-TEST(Val, initial_NullV)
+TEST(Var, initial_NullV)
 {
 	Var v;
 	EXPECT_EQ(impltype_t::T_NullV, v.getType());
@@ -20,7 +20,7 @@ TEST(Val, initial_NullV)
 	EXPECT_EQ(std::string(""), v.to_str());
 }
 
-TEST(Val, copy_ctor_IntV)
+TEST(Var, copy_ctor_IntV)
 {
 	IntV intv(50);
 
@@ -31,9 +31,31 @@ TEST(Val, copy_ctor_IntV)
 	intv.to_int();
 }
 
-TEST(Val, move_ctor_IntV)
+TEST(Var, move_ctor_IntV)
 {
-	Var v((IntV&&)(IntV(50)));
+	Var v(IntV(50));
 	EXPECT_EQ(impltype_t::T_IntV, v.getType());
+	EXPECT_EQ(50, v.to_int());
+}
+
+TEST(Var, copy_assign_IntV)
+{
+	IntV intv(50);	
+
+	Var v;
+	v = intv;
+	
+	EXPECT_EQ(50, intv.to_int());
+	EXPECT_EQ(50, v.to_int());
+}
+
+TEST(Var, move_assign_IntV)
+{
+	IntV intv(50);	
+
+	Var v;
+	v = std::move(intv);
+	
+	EXPECT_EQ(50, intv.to_int());
 	EXPECT_EQ(50, v.to_int());
 }

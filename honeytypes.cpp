@@ -8,17 +8,17 @@ namespace ht
 
 enum class impltype_t : uint8_t
 {
-	T_Null,
-	T_Int,
-	T_String,
+	T_NullV,
+	T_IntV,
+	T_StringV,
 };
 
-class Null
+class NullV
 {
 public:
-	constexpr static impltype_t IMPLTYPE = impltype_t::T_Null;
+	constexpr static impltype_t IMPLTYPE = impltype_t::T_NullV;
 	
-	Null()
+	NullV()
 	{ /* NOP */ }
 	
 	int to_int()
@@ -38,14 +38,14 @@ public:
 };
 
 // template<typename INT_T>
-class Int
+class IntV
 {
 public:
-	constexpr static impltype_t IMPLTYPE = impltype_t::T_Int;
+	constexpr static impltype_t IMPLTYPE = impltype_t::T_IntV;
 		
 	typedef int INT_T;	
 
-	Int(INT_T n = 0)
+	IntV(INT_T n = 0)
 	:	m_impl(n)
 	{ /* NOP */ }
 	
@@ -70,10 +70,10 @@ private:
 	INT_T m_impl;
 };
 
-class String
+class StringV
 {
 public:
-	constexpr static impltype_t IMPLTYPE = impltype_t::T_String;
+	constexpr static impltype_t IMPLTYPE = impltype_t::T_StringV;
 
 	int to_int();
 	
@@ -93,7 +93,7 @@ private:
 };
 
 int
-String::to_int()
+StringV::to_int()
 {
 	return strtol(m_impl.c_str(), nullptr, 0);
 }
@@ -137,16 +137,56 @@ public:
 	// typedef typename std::decay<T>::type VALUETYPE;
 	typedef T VALUETYPE;
 	constexpr static impltype_t IMPLTYPE = T::IMPLTYPE;
-
-	template<typename ...ARGS>
-	VarWrap(ARGS ...args)
-	:	VarWrapBase(IMPLTYPE), m_impl(std::forward<ARGS>(args)...)
+	
+	VarWrap()
+	:	VarWrapBase(IMPLTYPE)
 	{ /* NOP */ }
 	
-	virtual ~VarWrap()
-	{ /* NOP */ 
-		std::cout << "~varimpl:: type: " << static_cast<uint16_t>(IMPLTYPE) << std::endl;
+	VarWrap(const VALUETYPE& o)
+	:	VarWrapBase(IMPLTYPE), m_impl(o)
+	{ 
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	}
+
+	VarWrap(VALUETYPE&& o)
+	:	VarWrapBase(IMPLTYPE), m_impl(std::move(o))
+	{ 
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	}
+	
+	VarWrap& operator=(const VALUETYPE& o)
+	{
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+
+		m_impl = o;
+		
+		return *this;
+	}
+	
+	VarWrap& operator=(VALUETYPE&& o)
+	{
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+
+		m_impl = std::forward<VALUETYPE>(o);
+		
+		return *this;
+	}
+	
+	// VarWrap(const VarWrap<T>& o)
+	// :	VarWrapBase(IMPLTYPE), m_impl(o.m_impl)
+	// { /* NOP */ std::cout <<"copy vw";}
+	// 
+	// VarWrap(VarWrap<T>&& o)
+	// :	VarWrapBase(IMPLTYPE), m_impl(std::move(o.m_impl))
+	// { /* NOP */ std::cout <<"move vw"; }
+
+	// template<typename ...ARGS>
+	// VarWrap(ARGS ...args)
+	// :	VarWrapBase(IMPLTYPE), m_impl(std::forward<ARGS>(args)...)
+	// { /* NOP */ }
+	
+	virtual ~VarWrap()
+	{ /* NOP */ }
 	
 	virtual int to_int()
 	{
@@ -172,10 +212,10 @@ private:
 	VALUETYPE m_impl;
 };
 
-template class VarWrap<Int>;
-static_assert(sizeof(VarWrap<Int>) < SZ_VARIMPL, "sizeof(VarInt) larger than fixed-allocation size");
+template class VarWrap<IntV>;
+static_assert(sizeof(VarWrap<IntV>) < SZ_VARIMPL, "sizeof(VarIntV) larger than fixed-allocation size");
 
-template class VarWrap<String>;
+template class VarWrap<StringV>;
 
 } // end of namespace detail
 
@@ -184,51 +224,49 @@ class Var
 public:
 	//! default c-tor
 	/*!
-	 *  init as "Null" value
+	 *  init as "NullV" value
 	 */
 	Var()
 	{
-		new (m_implbuf)detail::VarWrap<Null>();
+		new (m_implbuf)detail::VarWrap<NullV>();
 	}
 	
-	//! copy c-tor
-	template<typename T>
-	explicit Var(const T& o)
-	{
-		new (m_implbuf)detail::VarWrap<T>(o);
-	}
-	
-	//! move c-tor
 	template<typename T>
 	explicit Var(T&& o)
 	{
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
 		typedef typename std::decay<T>::type VALUETYPE;
 		new (m_implbuf)detail::VarWrap<VALUETYPE>(std::forward<T>(o));
 	}
 	
 	//! copy assign-op
 	template<typename T>
-	Var& operator=(const T& o)
+	Var& operator=(T&& o)
 	{
-		if(getType() == detail::VarWrap<T>::IMPLTYPE)
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+		typedef typename std::decay<T>::type VALUETYPE;
+		
+		if(getType() == detail::VarWrap<VALUETYPE>::IMPLTYPE) // FIXME: add opt. compare vtable ptr == should be enough
 		{
 			// call assign op if possible (string can use a shared buffer for instance)
-			T* p = reinterpret_cast<detail::VarWrap<T>*>(getWrap())->getImpl();
-			*p = o;
+			auto vw = reinterpret_cast<detail::VarWrap<VALUETYPE>*>(getWrap());
+			*vw = std::forward<T>(o);
 		}
 		else
 		{
 			getWrap()->~VarWrapBase();
 			try
 			{
-				new (m_implbuf)detail::VarWrap<T>(o);
+				new (m_implbuf)detail::VarWrap<VALUETYPE>(std::forward<T>(o));
 			}
 			catch(...)
 			{
-				new (m_implbuf)detail::VarWrap<Null>();
+				new (m_implbuf)detail::VarWrap<NullV>();
 				throw;
 			}
 		}
+		
+		return *this;
 	}
 	
 	//! move assign-op
@@ -253,7 +291,7 @@ public:
 	
 	impltype_t getType()
 	{
-		return getWrap()->getType();	
+		return getWrap()->getType();
 	}
 
 private:
@@ -271,19 +309,3 @@ private:
 
 } // end of namespace ht
 
-using namespace ht;
-
-int main(int argc, char* argv[])
-{
-	Int intv;
-	intv = Int(30);
-	std::cout << "i: " << intv.to_str() << std::endl;
-	
-	Var v(intv);
-	std::cout << "v: " << v.to_str() << std::endl;
-	
-	Var v2(Int(50));
-	std::cout << "v2: " << v.to_str() << std::endl;
-
-	return 0;
-}

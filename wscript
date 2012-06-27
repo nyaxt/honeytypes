@@ -15,7 +15,7 @@ def configure(conf):
 	conf.env.append_unique('CXXFLAGS', ['-std=gnu++0x'])
 
 def build(bld):
-	bld.program(
+	bld.stlib(
 		target = 'honeytypes',
 		
 		source = 'honeytypes.cpp'
@@ -25,9 +25,9 @@ def build(bld):
 	if not bld.env.LIB_GTEST or len(bld.env.LIB_GTEST) == 0:
 		Logs.warn('gtest is not found / skipping test')
 	else:
-		pass
-		# bld.program(
-		# 	target = 'stageprof_test',
-		# 	use = 'TCMALLOC PTHREAD GTEST ptnk',
-		# 	source = 'stageprof_test.cpp'
-		# 	)
+		bld.program(
+		 	target = 'honeytypes_test',
+			features = 'gtest',
+		 	use = 'TCMALLOC PTHREAD GTEST honeytypes',
+		 	source = 'test/honeytypes_test.cpp'
+		 	)
