@@ -59,3 +59,21 @@ TEST(Var, move_assign_IntV)
 	EXPECT_EQ(50, intv.to_int());
 	EXPECT_EQ(50, v.to_int());
 }
+
+TEST(Var, copy_ctor_StringV)
+{
+	StringV stringv("64");
+	EXPECT_EQ(64, stringv.to_int());
+	
+	Var v(stringv);
+	EXPECT_EQ(64, v.to_int());
+}
+
+TEST(Var, move_ctor_StringV)
+{
+	StringV stringv("64");
+	EXPECT_EQ(64, stringv.to_int());
+	
+	Var v(std::move(stringv));
+	EXPECT_EQ(64, v.to_int());
+}

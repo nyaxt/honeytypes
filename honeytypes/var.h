@@ -3,6 +3,7 @@
 
 #include "types/types.h"
 #include "types/null.h"
+#include "methods.gen.h"
 
 #ifdef HT_VERBOSE_FUNCCALL
 #define HT_PRINT_FUNCNAME do { std::cout << __PRETTY_FUNCTION__ << std::endl; } while(false);
@@ -27,8 +28,7 @@ public:
 	
 	virtual ~VarWrapBase() = 0;
 	
-	virtual int to_int() = 0;
-	virtual std::string to_str() = 0;
+	METHODS_VARWRAPBASE
 	
 	// ====== accessor methods ======
 	
@@ -90,16 +90,6 @@ public:
 	virtual ~VarWrap()
 	{ /* NOP */ }
 	
-	virtual int to_int()
-	{
-		return m_impl.to_int();
-	}
-	
-	virtual std::string to_str()
-	{
-		return m_impl.to_str();	
-	}
-	
 	virtual impltype_t getType()
 	{
 		return IMPLTYPE;	
@@ -109,6 +99,8 @@ public:
 	{
 		return &m_impl;
 	}
+	
+	METHODS_VAR(getImpl())
 	
 private:
 	VALUETYPE m_impl;
@@ -170,15 +162,7 @@ public:
 		getWrap()->~VarWrapBase();	
 	}
 	
-	int to_int()
-	{
-		return getWrap()->to_int();	
-	}
-
-	std::string to_str()
-	{
-		return getWrap()->to_str();	
-	}
+	METHODS_VAR(getWrap())
 	
 	impltype_t getType()
 	{
@@ -197,6 +181,9 @@ private:
 		char* dummy[2];
 	};
 };
+
+#undef METHODS_VARWRAPBASE
+#undef METHODS_VAR
 
 } // end of namespace ht
 
