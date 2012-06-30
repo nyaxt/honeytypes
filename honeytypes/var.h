@@ -1,9 +1,11 @@
 #ifndef _ht_var_h_
 #define _ht_var_h_
 
+#include <string>
+
 #include "types/types.h"
 #include "types/null.h"
-#include "methods.gen.h"
+#include <honeytypes/methods.gen.h>
 
 #ifdef HT_VERBOSE_FUNCCALL
 #define HT_PRINT_FUNCNAME do { std::cout << __PRETTY_FUNCTION__ << std::endl; } while(false);

@@ -15,9 +15,10 @@ def configure(conf):
 	conf.env.append_unique('CXXFLAGS', ['-std=gnu++0x'])
 
 def build(bld):
+	bld(rule='ruby ${SRC} > ${TGT}', source = 'methods.rb', target='honeytypes/methods.gen.h')
 	bld.stlib(
 		target = 'honeytypes',
-		
+		includes = ['.'],
 		source = 'honeytypes.cpp'
 		)
 
