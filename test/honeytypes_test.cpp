@@ -1,4 +1,7 @@
-#include "../honeytypes.cpp"
+#include "honeytypes/types/int.h"
+#include "honeytypes/types/string.h"
+#include "honeytypes/var.h"
+#include "honeytypes/as.h"
 
 #include <gtest/gtest.h>
 using namespace ht;
@@ -76,4 +79,49 @@ TEST(Var, move_ctor_StringV)
 	
 	Var v(std::move(stringv));
 	EXPECT_EQ(64, v.to_int());
+}
+
+TEST(Var, copy_assign_StringV)
+{
+	StringV stringv("64");
+	EXPECT_EQ(64, stringv.to_int());
+	
+	Var v;
+	v = stringv;
+	EXPECT_EQ(64, v.to_int());
+	
+	EXPECT_EQ(64, stringv.to_int());
+}
+
+TEST(Var, move_assign_StringV)
+{
+	StringV stringv("64");
+	EXPECT_EQ(64, stringv.to_int());
+	
+	Var v;
+	v = std::move(stringv);
+	EXPECT_EQ(64, v.to_int());
+	
+	EXPECT_EQ(0, stringv.to_int());
+}
+
+TEST(as, as_int)
+{
+	IntV intv(12345);
+	StringV stringv("12345");
+	Var v = stringv;
+	
+	EXPECT_EQ(12345, ht::as<int>()(intv));
+	EXPECT_EQ(12345, ht::as<int>()(stringv));
+	EXPECT_EQ(12345, ht::as<int>()(v));
+}
+
+TEST(Var, vector)
+{
+	std::vector<Var> vs = {IntV(1), StringV("2"), StringV("3.0"), IntV(4)};
+	
+	for(Var& v: vs)
+	{
+		std::cout << v.to_int() << std::endl;
+	}
 }

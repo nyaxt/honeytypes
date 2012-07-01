@@ -1,5 +1,5 @@
 VERSION='0.0.1'
-APPNAME='ptnk'
+APPNAME='honeytypes'
 
 top = '.'
 out = 'build'
@@ -11,7 +11,7 @@ def options(opt):
 
 def configure(conf):
 	conf.load('compiler_cxx gtest')
-	conf.env.append_unique('CXXFLAGS', ['-Wall', '-g', '-march=native'])
+	conf.env.append_unique('CXXFLAGS', ['-Wall', '-g', '-march=native', '-O4'])
 	conf.env.append_unique('CXXFLAGS', ['-std=gnu++0x'])
 
 def build(bld):
@@ -30,5 +30,6 @@ def build(bld):
 		 	target = 'honeytypes_test',
 			features = 'gtest',
 		 	use = 'TCMALLOC PTHREAD GTEST honeytypes',
+			includes = ['.'],
 		 	source = 'test/honeytypes_test.cpp'
 		 	)

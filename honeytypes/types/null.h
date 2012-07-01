@@ -14,17 +14,17 @@ public:
 	NullV()
 	{ /* NOP */ }
 	
-	int to_int()
+	int to_int() const
 	{
 		return 0;	
 	}
 	
-	int cstr(char*, size_t)
+	int cstr(char*, size_t) const
 	{
 		return 0;
 	}
 	
-	std::string to_str()
+	std::string to_str() const
 	{
 		return std::string();	
 	}

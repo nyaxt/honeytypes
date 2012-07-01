@@ -1,0 +1,6 @@
+.lock-waf*
+.waf*
+*core*
+build
+__pycache__
+

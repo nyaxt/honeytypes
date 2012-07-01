@@ -17,17 +17,17 @@ public:
 	:	m_impl(n)
 	{ /* NOP */ }
 	
-	int to_int()
+	int to_int() const
 	{
 		return m_impl;
 	}
 
-	int cstr(char* buf, size_t len)
+	int cstr(char* buf, size_t len) const
 	{
 		return snprintf(buf, len, "%d", m_impl);
 	}
 	
-	std::string to_str()
+	std::string to_str() const
 	{
 		char buf[256];
 		snprintf(buf, sizeof buf, "%d", m_impl);

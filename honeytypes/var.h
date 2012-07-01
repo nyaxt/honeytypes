@@ -102,11 +102,34 @@ public:
 		return &m_impl;
 	}
 	
-	METHODS_VAR(getImpl())
+	const VALUETYPE* getImpl() const
+	{
+		return &m_impl;
+	}
+	
+	METHODS_VAR(virtual, getImpl())
 	
 private:
 	VALUETYPE m_impl;
 };
+
+#if 0
+template<typename DERIVED>
+class AsHelper
+{
+public:
+	template<typename T> T as() const;
+};
+
+template<>
+template<typename DERIVED>
+inline
+int
+AsHelper<DERIVED>::as<int>() const
+{
+	return static_cast<const DERIVED*>(this)->to_int();
+}
+#endif
 
 } // end of namespace detail
 
@@ -122,8 +145,44 @@ public:
 		new (m_implbuf)detail::VarWrap<NullV>();
 	}
 	
+	~Var()
+	{
+		getWrap()->~VarWrapBase();	
+	}
+
+	//! copy c-tor
+	Var(const Var& o)
+	{
+		HT_PRINT_FUNCNAME;
+		copyCtorImpl(o);
+	}
+	
+	//! copy assign op.
+	Var& operator=(const Var& o);
+	
+	//! move c-tor
+	Var(Var&& o)
+	{
+		HT_PRINT_FUNCNAME;
+		
+		::memcpy(m_implbuf, o.m_implbuf, sizeof(m_implbuf));
+		new (o.m_implbuf)detail::VarWrap<NullV>();
+	}
+	
+	//! move assign op.
+	Var& operator=(Var&& o)
+	{
+		HT_PRINT_FUNCNAME;
+		
+		this->~Var();
+		::memcpy(m_implbuf, o.m_implbuf, sizeof(m_implbuf));
+		new (o.m_implbuf)detail::VarWrap<NullV>();
+		
+		return *this;
+	}
+	
 	template<typename T>
-	explicit Var(T&& o)
+	Var(T&& o)
 	{
 		HT_PRINT_FUNCNAME;
 		typedef typename std::decay<T>::type VALUETYPE;
@@ -159,22 +218,36 @@ public:
 		return *this;
 	}
 	
-	~Var()
-	{
-		getWrap()->~VarWrapBase();	
-	}
+	METHODS_VAR(, getWrap())
 	
-	METHODS_VAR(getWrap())
-	
-	impltype_t getType()
+	impltype_t getType() const
 	{
 		return getWrap()->getType();
 	}
-
+	
 private:
+	void copyCtorImpl(const Var& o);	
+
 	detail::VarWrapBase* getWrap()
 	{
 		return reinterpret_cast<detail::VarWrapBase*>(m_implbuf);
+	}
+	
+	const detail::VarWrapBase* getWrap() const
+	{
+		return reinterpret_cast<const detail::VarWrapBase*>(m_implbuf);
+	}
+	
+	template<typename T>
+	detail::VarWrap<T>* getWrapImpl()
+	{
+		return reinterpret_cast<detail::VarWrap<T>*>(m_implbuf);
+	}
+	
+	template<typename T>
+	const detail::VarWrap<T>* getWrapImpl() const
+	{
+		return reinterpret_cast<const detail::VarWrap<T>*>(m_implbuf);
 	}
 	
 	union
