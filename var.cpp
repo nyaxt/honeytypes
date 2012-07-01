@@ -1,8 +1,3 @@
-#include <iostream>
-#include <memory>
-#include <type_traits>
-#include <string.h>
-
 #define HT_VERBOSE_FUNCCALL
 
 #include "honeytypes/var.h"
@@ -20,12 +15,6 @@ namespace detail
 	template class VarWrap<StringV>;
 	static_assert(sizeof(VarWrap<StringV>) < SZ_VARIMPL, "sizeof(VarIntV) larger than fixed-allocation size");
 };
-	
-int
-StringV::to_int() const
-{
-	return strtol(m_impl.c_str(), nullptr, 0);
-}
 
 void
 Var::copyCtorImpl(const Var& o)

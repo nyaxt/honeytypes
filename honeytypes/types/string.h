@@ -32,6 +32,12 @@ public:
 		return std::string(m_impl);	
 	}
 	
+	std::string inspect() const
+	{
+		// FIXME: escape control chars
+		return std::string("#<StringV: \"")+m_impl+"\">";
+	}
+	
 private:
 	std::string m_impl;
 };

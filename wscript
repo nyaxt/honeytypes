@@ -19,7 +19,11 @@ def build(bld):
 	bld.stlib(
 		target = 'honeytypes',
 		includes = ['.'],
-		source = 'honeytypes.cpp'
+		source = '''
+			int.cpp
+			string.cpp
+			var.cpp
+			'''.split()
 		)
 
 	# ptnk_test

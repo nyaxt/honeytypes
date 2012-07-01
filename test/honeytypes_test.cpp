@@ -122,6 +122,6 @@ TEST(Var, vector)
 	
 	for(Var& v: vs)
 	{
-		std::cout << v.to_int() << std::endl;
+		std::cout << v.inspect() << std::endl;
 	}
 }

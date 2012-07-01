@@ -33,6 +33,8 @@ public:
 		snprintf(buf, sizeof buf, "%d", m_impl);
 		return std::string(buf);
 	}
+	
+	std::string inspect() const;
 
 private:
 	INT_T m_impl;

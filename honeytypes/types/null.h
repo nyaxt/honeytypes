@@ -28,6 +28,11 @@ public:
 	{
 		return std::string();	
 	}
+	
+	std::string inspect() const
+	{
+		return std::string("#<NullV>");	
+	}
 };
 
 } // end of namespace ht
