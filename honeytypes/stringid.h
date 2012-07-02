@@ -96,7 +96,7 @@ public:
 	
 	bool operator!=(const StringId& o) const
 	{
-		if(m_hash == o.m_hash) return false;
+		if(m_hash != o.m_hash) return true;
 		
 		return m_str != o.m_str;
 	}
@@ -111,8 +111,6 @@ public:
 		return m_str != o;	
 	}
 	
-	void updateHash() noexcept(true);
-	
 	size_t hash() const noexcept(true)
 	{
 		return m_hash;
@@ -123,7 +121,12 @@ public:
 		return m_str;
 	}
 	
+	//! only for testing purposes
+	void setHash_(size_t h) { m_hash = h; }
+	
 private:
+	void updateHash() noexcept(true);
+	
 	static constexpr size_t SZ_CMPBUF = sizeof(size_t);
 	
 	std::string m_str;

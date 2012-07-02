@@ -32,3 +32,19 @@ TEST(StringId, compare_different_hash)
 	EXPECT_NE(b, a);
 }
 
+TEST(StringId, compare_same_hash)
+{
+	StringId a("a");
+	StringId b("b");
+	
+	b.setHash_(a.hash());
+	
+	std::hash<StringId> h;
+	EXPECT_EQ(h(a), h(b));
+	
+	EXPECT_EQ(a, a);
+	EXPECT_EQ(b, b);
+	EXPECT_NE(a, b);
+	EXPECT_NE(b, a);
+}
+
