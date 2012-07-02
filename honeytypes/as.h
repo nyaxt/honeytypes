@@ -30,6 +30,28 @@ struct as<std::string>
 		return v.to_str();	
 	};
 };
+
+//! similar to std::less for Var types
+template<typename T>
+struct less_as
+{
+	template<typename V>
+	bool operator()(const V& a, const V& b)
+	{
+		return as<T>()(a) < as<T>()(b);	
+	}
+};
+
+//! similar to std::greater for Var types
+template<typename T>
+struct greater_as
+{
+	template<typename V>
+	bool operator()(const V& a, const V& b)
+	{
+		return as<T>()(a) > as<T>()(b);
+	}
+};
 	
 } // end of namespace ht
 

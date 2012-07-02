@@ -3,7 +3,10 @@
 #include "honeytypes/var.h"
 #include "honeytypes/as.h"
 
+#include <algorithm>
+
 #include <gtest/gtest.h>
+
 using namespace ht;
 
 TEST(Int, to_int)
@@ -105,6 +108,16 @@ TEST(Var, move_assign_StringV)
 	EXPECT_EQ(0, stringv.to_int());
 }
 
+TEST(Var, vector)
+{
+	std::vector<Var> vs = {IntV(1), StringV("2"), StringV("3.0"), IntV(4)};
+	
+	for(Var& v: vs)
+	{
+		std::cout << v.inspect() << std::endl;
+	}
+}
+
 TEST(as, as_int)
 {
 	IntV intv(12345);
@@ -116,12 +129,42 @@ TEST(as, as_int)
 	EXPECT_EQ(12345, ht::as<int>()(v));
 }
 
-TEST(Var, vector)
+TEST(as, less_as)
 {
-	std::vector<Var> vs = {IntV(1), StringV("2"), StringV("3.0"), IntV(4)};
+	std::vector<Var> vs = {
+		IntV(3),
+		StringV("5"),
+		IntV(1),
+		StringV("4"),
+		StringV("2")
+	};
 	
-	for(Var& v: vs)
-	{
-		std::cout << v.inspect() << std::endl;
-	}
+	std::sort(vs.begin(), vs.end(), ht::less_as<int>());
+	
+	// for(Var& v: vs) std::cout << v.inspect() << std::endl;
+	EXPECT_EQ(1, ht::as<int>()(vs[0]));
+	EXPECT_EQ(2, ht::as<int>()(vs[1]));
+	EXPECT_EQ(3, ht::as<int>()(vs[2]));
+	EXPECT_EQ(4, ht::as<int>()(vs[3]));
+	EXPECT_EQ(5, ht::as<int>()(vs[4]));
+}
+
+TEST(as, greater_as)
+{
+	std::vector<Var> vs = {
+		IntV(3),
+		StringV("5"),
+		IntV(1),
+		StringV("4"),
+		StringV("2")
+	};
+	
+	std::sort(vs.begin(), vs.end(), ht::greater_as<int>());
+	
+	// for(Var& v: vs) std::cout << v.inspect() << std::endl;
+	EXPECT_EQ(5, ht::as<int>()(vs[0]));
+	EXPECT_EQ(4, ht::as<int>()(vs[1]));
+	EXPECT_EQ(3, ht::as<int>()(vs[2]));
+	EXPECT_EQ(2, ht::as<int>()(vs[3]));
+	EXPECT_EQ(1, ht::as<int>()(vs[4]));
 }

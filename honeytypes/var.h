@@ -115,24 +115,6 @@ private:
 	VALUETYPE m_impl;
 };
 
-#if 0
-template<typename DERIVED>
-class AsHelper
-{
-public:
-	template<typename T> T as() const;
-};
-
-template<>
-template<typename DERIVED>
-inline
-int
-AsHelper<DERIVED>::as<int>() const
-{
-	return static_cast<const DERIVED*>(this)->to_int();
-}
-#endif
-
 } // end of namespace detail
 
 class Var
