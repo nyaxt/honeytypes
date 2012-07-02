@@ -20,6 +20,7 @@ def build(bld):
 		target = 'honeytypes',
 		includes = ['.'],
 		source = '''
+			stringid.cpp
 			int.cpp
 			string.cpp
 			var.cpp
@@ -33,7 +34,18 @@ def build(bld):
 		bld.program(
 		 	target = 'honeytypes_test',
 			features = 'gtest',
-		 	use = 'TCMALLOC PTHREAD GTEST honeytypes',
+		 	use = 'GTEST honeytypes',
 			includes = ['.'],
-		 	source = 'test/honeytypes_test.cpp'
+		 	source = '''
+			test/stringid_test.cpp
+			test/honeytypes_test.cpp
+			'''.split()
 		 	)
+	
+	bld.program(
+		target = 'bench_stringid',
+		use = 'honeytypes',
+		lib = 'rt',
+		includes = ['.'],
+		source = 'test/bench_stringid.cpp'
+		)

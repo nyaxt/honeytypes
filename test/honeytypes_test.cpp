@@ -168,3 +168,20 @@ TEST(as, greater_as)
 	EXPECT_EQ(2, ht::as<int>()(vs[3]));
 	EXPECT_EQ(1, ht::as<int>()(vs[4]));
 }
+
+#if 0
+{
+	TableBuilder tbEntries;
+	tbEntries.addColumn("thr_id", impltype_t::T_IntV);
+	tbEntries.addColumn("entry_id", impltype_t::T_IntV);
+	
+	tbEntries.addColumn("name", impltype_t::T_StringV);
+	tbEntries.addColumn("mail", impltype_t::T_StringV);
+	tbEntries.addColumn("created_at", impltype_t::T_DateTimeV);
+	tbEntries.addColumn("content", impltype_t::T_StringV);
+	
+	tbEntries.setPrimaryKey({"thr_id", "entry_id"});
+
+	Table tEntries = tbEntries.build();
+}
+#endif
