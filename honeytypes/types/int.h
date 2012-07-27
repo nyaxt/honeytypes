@@ -22,6 +22,16 @@ public:
 		return m_impl;
 	}
 
+	bool to_bool() const
+	{
+		return (m_impl != 0);
+	}
+
+	double to_double() const
+	{
+		return static_cast<double>(m_impl);
+	}
+
 	int cstr(char* buf, size_t len) const
 	{
 		return snprintf(buf, len, "%d", m_impl);

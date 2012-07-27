@@ -26,6 +26,8 @@ puts relayimpls.join(" \\\n")
 
 __END__
 int to_int() const;
+bool to_bool() const;
+double to_double() const;
 std::string to_str() const;
 int cstr(char* buf, size_t len) const;
 std::string inspect() const;

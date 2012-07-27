@@ -1,6 +1,7 @@
 #ifndef _ht_var_h_
 #define _ht_var_h_
 
+#include <iostream>
 #include <string>
 #include <string.h>
 
@@ -9,7 +10,6 @@
 #include <honeytypes/methods.gen.h>
 
 #ifdef HT_VERBOSE_FUNCCALL
-#include <iostream>
 #define HT_PRINT_FUNCNAME do { std::cout << __PRETTY_FUNCTION__ << std::endl; } while(false);
 #else
 #define HT_PRINT_FUNCNAME 
@@ -17,8 +17,8 @@
 
 namespace ht
 {
-	
-constexpr size_t SZ_VARIMPL = 128; // sizeof(ptr)*2 should be enough!
+
+constexpr size_t SZ_VARIMPL = 128; // FIXME: sizeof(ptr)*2 should be enough!
 	
 namespace detail
 {
@@ -165,7 +165,11 @@ public:
 		return *this;
 	}
 	
-	template<typename T>
+	//! copy/move c-tor: from one of ht::***V types
+	template<typename T,
+		 // enable template instantiation only if T::IMPLTYPE exist
+		impltype_t = std::decay<T>::type::IMPLTYPE
+	> 
 	Var(T&& o)
 	{
 		HT_PRINT_FUNCNAME;
@@ -173,7 +177,11 @@ public:
 		new (m_implbuf)detail::VarWrap<VALUETYPE>(std::forward<T>(o));
 	}
 	
-	template<typename T>
+	//! copy/move assign op.: from one of ht::***V types
+	template<typename T,
+		 // enable template instantiation only if T::IMPLTYPE exist
+		impltype_t = std::decay<T>::type::IMPLTYPE
+	>
 	Var& operator=(T&& o)
 	{
 		HT_PRINT_FUNCNAME;
@@ -201,12 +209,25 @@ public:
 		
 		return *this;
 	}
+
+	bool operator==(const Var& o) const;
 	
 	METHODS_VAR(, getWrap())
 	
 	impltype_t getType() const
 	{
 		return getWrap()->getType();
+	}
+
+	template<typename T,
+		 // enable template instantiation only if T::IMPLTYPE exist
+		impltype_t IMPLTYPE = T::IMPLTYPE
+	>
+	const T*
+	unbox() const
+	{
+		if(getType() != IMPLTYPE) return nullptr;
+		return getWrapImpl<T>()->getImpl();
 	}
 	
 private:
@@ -240,6 +261,23 @@ private:
 		char* dummy[2];
 	};
 };
+
+inline
+std::ostream&
+operator<<(std::ostream& s, const Var& v)
+{
+	s << v.inspect();
+
+	return s;
+}
+
+template<typename T>
+inline
+bool
+operator==(const T& o, const Var& v)
+{
+	return v == o;
+}
 
 #undef METHODS_VARWRAPBASE
 #undef METHODS_VAR

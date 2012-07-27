@@ -2,6 +2,14 @@
 
 namespace ht
 {
+
+std::ostream&
+operator<<(std::ostream& s, const StringId& o)
+{
+	s << o.str();
+
+	return s;
+}
 	
 void
 StringId::updateHash() noexcept(true)

@@ -4,7 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
-#include "time.h"
+#include <chrono>
 
 using namespace ht;
 
@@ -38,19 +38,19 @@ void bench_main()
 int
 main()
 {
+	typedef std::chrono::high_resolution_clock HighResClock;
+	typedef std::chrono::time_point<HighResClock> HighResTimeStamp;
+
 	bench_init();	
 
 	std::cout << "bench start" << std::endl;
-	struct timespec ts, te;
-	clock_gettime(CLOCK_MONOTONIC, &ts);
+	HighResTimeStamp ts = HighResClock::now();
 	{
 		bench_main();
 	}	
-	clock_gettime(CLOCK_MONOTONIC, &te);
+	HighResTimeStamp te = HighResClock::now();
 	std::cout << "bench end" << std::endl;
 	
-	double diff = (te.tv_sec - ts.tv_sec) * 1000;
-	diff += (double)(te.tv_nsec - ts.tv_nsec) / 1000000.0;
-	std::cout << "time took: " << diff << "ms" << std::endl;
+	std::cout << "time took: " << std::chrono::duration_cast<std::chrono::nanoseconds>(te - ts).count() << "ms" << std::endl;
 }
 

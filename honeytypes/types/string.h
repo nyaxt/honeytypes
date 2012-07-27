@@ -20,11 +20,13 @@ public:
 	{ /* NOP */ }
 
 	int to_int() const;
+	bool to_bool() const;
+	double to_double() const;
 	
 	int cstr(char* buf, size_t len) const
 	{
-		char* pe = ::strncpy(buf, m_impl.data(), len);	
-		return pe - buf;
+		::strncpy(buf, m_impl.data(), len);
+		return static_cast<int>(m_impl.size());
 	}
 	
 	std::string to_str() const
@@ -37,6 +39,16 @@ public:
 		// FIXME: escape control chars
 		return std::string("#<StringV: \"")+m_impl+"\">";
 	}
+
+	std::string& get()
+	{
+		return m_impl;	
+	}
+
+	const std::string& get() const
+	{
+		return m_impl;	
+	}
 	
 private:
 	std::string m_impl;
@@ -45,3 +57,4 @@ private:
 } // end of namespace ht
 
 #endif // _ht_types_string_h_
+

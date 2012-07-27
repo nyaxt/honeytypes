@@ -53,7 +53,7 @@ public:
 		
 		return *this;
 	}
-	
+
 	//! c-tor
 	/*!
 	 *	@param [in] str
@@ -63,6 +63,13 @@ public:
 	:	m_str(str)
 	{
 		updateHash();
+	}
+
+	//! c-tor: from null term c string
+	StringId(const char* cstr)
+	:	m_str(cstr)
+	{
+		updateHash();	
 	}
 	
 	StringId& operator=(const std::string& str)
@@ -120,6 +127,11 @@ public:
 	{
 		return m_str;
 	}
+
+	bool empty() const noexcept(true)
+	{
+		return m_str.empty();	
+	}
 	
 	//! only for testing purposes
 	void setHash_(size_t h) { m_hash = h; }
@@ -132,6 +144,7 @@ private:
 	std::string m_str;
 	size_t m_hash = 0;
 };
+std::ostream& operator<<(std::ostream& s, const StringId& o);
 
 inline
 bool operator==(const std::string& a, const StringId& b)
@@ -153,9 +166,18 @@ namespace std
 template<>
 struct hash< ::ht::StringId>
 {
-	size_t operator()(const ::ht::StringId& strid) noexcept(true)
+	size_t operator()(const ::ht::StringId& strid) const noexcept(true)
 	{
 		return strid.hash();
+	}
+};
+
+template<>
+struct less< ::ht::StringId>
+{
+	bool operator()(const ::ht::StringId& a, const::ht::StringId& b) const noexcept(true)
+	{
+		return std::less<std::string>()(a.str(), b.str());
 	}
 };
 

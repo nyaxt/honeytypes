@@ -1,20 +1,33 @@
 #define HT_VERBOSE_FUNCCALL
 
 #include "honeytypes/var.h"
+#include "honeytypes/types/bool.h"
 #include "honeytypes/types/int.h"
+#include "honeytypes/types/float.h"
 #include "honeytypes/types/string.h"
 
 namespace ht
 {
 	
+// no explicit instantiation for now
+#if 0
+
 namespace detail
 {
-	template class VarWrap<IntV>;
-	static_assert(sizeof(VarWrap<IntV>) < SZ_VARIMPL, "sizeof(VarIntV) larger than fixed-allocation size");
 
-	template class VarWrap<StringV>;
-	static_assert(sizeof(VarWrap<StringV>) < SZ_VARIMPL, "sizeof(VarIntV) larger than fixed-allocation size");
+#define INSTANTIATE(TYPE) \
+	template class VarWrap<TYPE>; \
+	static_assert(sizeof(VarWrap<TYPE>) < SZ_VARIMPL, "sizeof(VarWrap<" #TYPE ">) larger than fixed-allocation size");
+
+	INSTANTIATE(BoolV);
+	INSTANTIATE(IntV);
+	INSTANTIATE(FloatV);
+	INSTANTIATE(StringV);
+#undef INSTANTIATE
+
 };
+
+#endif
 
 void
 Var::copyCtorImpl(const Var& o)
@@ -24,12 +37,15 @@ Var::copyCtorImpl(const Var& o)
 	case impltype_t::T_NullV:
 		new (m_implbuf)detail::VarWrap<NullV>();
 		break;
-	case impltype_t::T_IntV:
-		new (m_implbuf)detail::VarWrap<IntV>(*o.getWrapImpl<IntV>());
+#define DEFCASE(TYPE) \
+	case impltype_t::T_##TYPE: \
+		new (m_implbuf)detail::VarWrap<TYPE>(*o.getWrapImpl<TYPE>()); \
 		break;
-	case impltype_t::T_StringV:
-		new (m_implbuf)detail::VarWrap<StringV>(*o.getWrapImpl<StringV>());
-		break;
+	DEFCASE(BoolV);
+	DEFCASE(IntV);
+	DEFCASE(FloatV);
+	DEFCASE(StringV);
+#undef DEFCASE
 	}
 }
 
@@ -46,14 +62,19 @@ Var::operator=(const Var& o)
 		// call assign op.	
 		switch(getType())
 		{
+#define DEFCASE(TYPE) \
+		case impltype_t::T_##TYPE: \
+			*getWrapImpl<TYPE>() = *o.getWrapImpl<TYPE>(); \
+			break;
+
 		case impltype_t::T_NullV:
 			break;
-		case impltype_t::T_IntV:
-			*getWrapImpl<IntV>() = *o.getWrapImpl<IntV>();
-			break;
-		case impltype_t::T_StringV:
-			*getWrapImpl<StringV>() = *o.getWrapImpl<StringV>();
-			break;
+
+		DEFCASE(BoolV);
+		DEFCASE(IntV);
+		DEFCASE(FloatV);
+		DEFCASE(StringV);
+#undef DEFCASE
 		}
 	}
 	else
@@ -74,6 +95,28 @@ Var::operator=(const Var& o)
 	}
 
 	return *this;
+}
+
+bool
+Var::operator==(const Var& o) const
+{
+	if(getType() != o.getType()) return false;
+
+	switch(getType())
+	{
+#define DEFCASE(TYPE) \
+		case impltype_t::T_##TYPE: \
+			return *getWrapImpl<TYPE>()->getImpl() == *o.getWrapImpl<TYPE>()->getImpl();
+		DEFCASE(NullV);
+		DEFCASE(BoolV);
+		DEFCASE(IntV);
+		DEFCASE(FloatV);
+		DEFCASE(StringV);
+#undef DEFCASE
+	}
+
+	/* NOT REACHED */
+	return false;
 }
 
 } // end of namespace ht

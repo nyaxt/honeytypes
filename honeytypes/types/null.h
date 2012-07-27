@@ -19,6 +19,16 @@ public:
 		return 0;	
 	}
 	
+	bool to_bool() const
+	{
+		return false;	
+	}
+
+	double to_double() const
+	{
+		return 0.0;	
+	}
+	
 	int cstr(char*, size_t) const
 	{
 		return 0;
