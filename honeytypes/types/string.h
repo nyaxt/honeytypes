@@ -19,6 +19,20 @@ public:
 	: m_impl(o)	
 	{ /* NOP */ }
 
+	StringV(std::string&& o)
+	: m_impl(std::move(o))
+	{ /* NOP */ }
+
+	bool operator==(const StringV& o) const
+	{
+		return m_impl == o.m_impl;
+	}
+
+	bool operator!=(const StringV& o) const
+	{
+		return m_impl != o.m_impl;	
+	}
+
 	int to_int() const;
 	bool to_bool() const;
 	double to_double() const;

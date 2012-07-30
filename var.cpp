@@ -1,4 +1,4 @@
-#define HT_VERBOSE_FUNCCALL
+// #define HT_VERBOSE_FUNCCALL
 
 #include "honeytypes/var.h"
 #include "honeytypes/types/bool.h"
@@ -104,10 +104,10 @@ Var::operator==(const Var& o) const
 
 	switch(getType())
 	{
+		case impltype_t::T_NullV: return true;
 #define DEFCASE(TYPE) \
 		case impltype_t::T_##TYPE: \
 			return *getWrapImpl<TYPE>()->getImpl() == *o.getWrapImpl<TYPE>()->getImpl();
-		DEFCASE(NullV);
 		DEFCASE(BoolV);
 		DEFCASE(IntV);
 		DEFCASE(FloatV);

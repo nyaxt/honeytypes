@@ -15,6 +15,16 @@ public:
 	BoolV(bool b = 0)
 	:	m_impl(b)
 	{ /* NOP */ }
+
+	bool operator==(const BoolV& o) const
+	{
+		return m_impl == o.m_impl;
+	}
+
+	bool operator!=(const BoolV& o) const
+	{
+		return m_impl != o.m_impl;	
+	}
 	
 	int to_int() const
 	{

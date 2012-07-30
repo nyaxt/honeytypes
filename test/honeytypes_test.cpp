@@ -169,6 +169,22 @@ TEST(as, greater_as)
 	EXPECT_EQ(1, ht::as<int>()(vs[4]));
 }
 
+TEST(Var, eq_op_null)
+{
+	Var null;
+	EXPECT_EQ(null, null);
+}
+
+TEST(Var, eq_op_intv)
+{
+	Var null;
+	Var intv(IntV(123));
+	EXPECT_NE(null, intv);
+
+	EXPECT_EQ(IntV(123), intv);
+	EXPECT_NE(IntV(321), intv);
+}
+
 #if 0
 {
 	TableBuilder tbEntries;

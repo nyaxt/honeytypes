@@ -17,6 +17,16 @@ public:
 	FloatV(FLOAT_T n = static_cast<FLOAT_T>(0.0))
 	:	m_impl(n)
 	{ /* NOP */ }
+
+	bool operator==(const FloatV& o) const
+	{
+		return m_impl == o.m_impl;
+	}
+
+	bool operator!=(const FloatV& o) const
+	{
+		return m_impl != o.m_impl;	
+	}
 	
 	int to_int() const
 	{

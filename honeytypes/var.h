@@ -211,6 +211,10 @@ public:
 	}
 
 	bool operator==(const Var& o) const;
+	bool operator!=(const Var& o) const
+	{
+		return ! (*this == o);	
+	}
 	
 	METHODS_VAR(, getWrap())
 	
@@ -277,6 +281,14 @@ bool
 operator==(const T& o, const Var& v)
 {
 	return v == o;
+}
+
+template<typename T>
+inline
+bool
+operator!=(const T& o, const Var& v)
+{
+	return v != o;
 }
 
 #undef METHODS_VARWRAPBASE

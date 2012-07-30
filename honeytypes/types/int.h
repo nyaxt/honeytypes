@@ -16,6 +16,16 @@ public:
 	IntV(INT_T n = 0)
 	:	m_impl(n)
 	{ /* NOP */ }
+
+	bool operator==(const IntV& o) const
+	{
+		return m_impl == o.m_impl;
+	}
+
+	bool operator!=(const IntV& o) const
+	{
+		return m_impl != o.m_impl;	
+	}
 	
 	int to_int() const
 	{

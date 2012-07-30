@@ -11,7 +11,7 @@ def options(opt):
 
 def configure(conf):
 	conf.load('compiler_cxx gtest')
-	conf.env.append_unique('CXXFLAGS', ['-Wall', '-g', '-O4']) # '-march=native', AVX optimization emits unsupported asm on osx/sandybridge/gcc-4.7.0
+	conf.env.append_unique('CXXFLAGS', ['-Wall', '-g', '-O0']) # '-march=native', AVX optimization emits unsupported asm on osx/sandybridge/gcc-4.7.0
 	conf.env.append_unique('CXXFLAGS', ['-std=gnu++0x'])
 
 	conf.check_cxx(uselib_store='RT', lib='rt', mandatory=False)

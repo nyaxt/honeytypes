@@ -13,6 +13,16 @@ public:
 	
 	NullV()
 	{ /* NOP */ }
+
+	bool operator==(const BoolV& o) const
+	{
+		return true;
+	}
+
+	bool operator!=(const BoolV& o) const
+	{
+		return false;
+	}
 	
 	int to_int() const
 	{
