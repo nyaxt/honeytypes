@@ -93,6 +93,13 @@ public:
 		
 		return *this;
 	}
+
+	bool operator<(const StringId o) const
+	{
+		if(m_hash != o.m_hash) return m_hash < o.m_hash;
+
+		return m_str < o.m_str;
+	}
 	
 	bool operator==(const StringId& o) const
 	{
