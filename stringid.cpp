@@ -24,6 +24,18 @@ StringId::updateHash() noexcept(true)
 		m_hash = h(m_str);
 	}
 }
-	
+
+bool
+StringId::operator<(const StringId& o) const
+{
+	if(m_hash != o.m_hash) return m_hash < o.m_hash;
+
+	size_t cmplen = std::min(m_str.size(), o.m_str.size());
+	int c = ::memcmp(m_str.data(), o.m_str.data(), cmplen);
+	if(c != 0) return (c < 0);
+
+	return (m_str.size() < o.m_str.size());
+}
+
 } // end of namespace ht
 
