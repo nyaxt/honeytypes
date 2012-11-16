@@ -22,6 +22,26 @@ struct as<int>
 };
 
 template<>
+struct as<float>
+{
+	template<typename V>
+	float operator()(const V& v)
+	{
+		return v.to_double();
+	}
+};
+
+template<>
+struct as<double>
+{
+	template<typename V>
+	double operator()(const V& v)
+	{
+		return v.to_double();	
+	}
+};
+
+template<>
 struct as<std::string>
 {
 	template<typename V>

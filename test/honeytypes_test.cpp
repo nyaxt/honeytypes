@@ -1,4 +1,5 @@
 #include "honeytypes/types/int.h"
+#include "honeytypes/types/float.h"
 #include "honeytypes/types/string.h"
 #include "honeytypes/var.h"
 #include "honeytypes/as.h"
@@ -127,6 +128,43 @@ TEST(as, as_int)
 	EXPECT_EQ(12345, ht::as<int>()(intv));
 	EXPECT_EQ(12345, ht::as<int>()(stringv));
 	EXPECT_EQ(12345, ht::as<int>()(v));
+}
+
+TEST(as, as_string)
+{
+	StringV stringv("12345");
+	IntV intv(12345);
+	Var v = intv;
+
+	EXPECT_EQ(std::string("12345"), ht::as<std::string>()(stringv));
+	EXPECT_EQ(std::string("12345"), ht::as<std::string>()(intv));
+	EXPECT_EQ(std::string("12345"), ht::as<std::string>()(v));
+}
+
+TEST(as, as_double)
+{
+	FloatV floatv(10.234);
+	StringV stringv("10.234");
+	IntV intv(10);
+	Var v = intv;
+
+	ASSERT_EQ(10.234, ht::as<double>()(floatv));
+	ASSERT_DOUBLE_EQ(10.234, ht::as<double>()(stringv));
+	ASSERT_EQ(10.0, ht::as<double>()(intv));
+	ASSERT_EQ(10.0, ht::as<double>()(v));
+}
+
+TEST(as, as_float)
+{
+	FloatV floatv(10.234);
+	StringV stringv("10.234");
+	IntV intv(10);
+	Var v = intv;
+
+	ASSERT_FLOAT_EQ(10.234, ht::as<float>()(floatv));
+	ASSERT_FLOAT_EQ(10.234, ht::as<float>()(stringv));
+	ASSERT_EQ(10.0, ht::as<float>()(intv));
+	ASSERT_EQ(10.0, ht::as<float>()(v));
 }
 
 TEST(as, less_as)
