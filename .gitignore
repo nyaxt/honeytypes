@@ -1,3 +1,4 @@
+honeytypes/methods.gen.h
 .lock-waf*
 .waf*
 *core*
