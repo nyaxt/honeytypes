@@ -1,6 +1,6 @@
 # Honeytypes
 
-Honeytypes is a open source library, which provide dynamic primitive types in C++11.
+Honeytypes is an open source library, which provide dynamic primitive types in C++11.
 
 ## Sample Usage
 ```
