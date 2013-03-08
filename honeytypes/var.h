@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <string.h>
+#include <functional> // for std::hash
 
 #include "types/types.h"
 #include "types/null.h"
@@ -295,5 +296,19 @@ operator!=(const T& o, const Var& v)
 #undef METHODS_VAR
 
 } // end of namespace ht
+
+namespace std
+{
+
+template<>
+struct hash< ::ht::Var>
+{
+	size_t operator()(const ::ht::Var& v) const noexcept(true)
+	{
+		return v.hash();
+	}
+};
+
+} // end of namespace std
 
 #endif // _ht_var_h_

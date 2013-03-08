@@ -62,6 +62,11 @@ public:
 	
 	std::string inspect() const;
 
+	size_t hash() const
+	{
+		return static_cast<size_t>(m_impl);
+	}
+
 private:
 	bool m_impl;
 };

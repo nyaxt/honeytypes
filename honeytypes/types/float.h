@@ -57,6 +57,11 @@ public:
 	}
 	
 	std::string inspect() const;
+	
+	size_t hash() const
+	{
+		return std::hash<FLOAT_T>()(m_impl);	
+	}
 
 private:
 	FLOAT_T m_impl;

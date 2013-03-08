@@ -53,6 +53,11 @@ public:
 	{
 		return std::string("#<NullV>");	
 	}
+	
+	size_t hash() const
+	{
+		return ~static_cast<size_t>(0);
+	}
 };
 
 } // end of namespace ht

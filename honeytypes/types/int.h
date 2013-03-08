@@ -55,6 +55,11 @@ public:
 	}
 	
 	std::string inspect() const;
+	
+	size_t hash() const
+	{
+		return std::hash<INT_T>()(m_impl);	
+	}
 
 private:
 	INT_T m_impl;

@@ -64,6 +64,11 @@ public:
 		return m_impl;	
 	}
 	
+	size_t hash() const
+	{
+		return std::hash<std::string>()(m_impl);	
+	}
+	
 private:
 	std::string m_impl;
 };
